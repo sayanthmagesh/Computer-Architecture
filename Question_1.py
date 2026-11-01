@@ -19,7 +19,7 @@ def add(a, b):
     print(a_bin, "+", b_bin)
     print("Result =", result_bin)
     print("Decimal =", result)
-    print("Overflow =", overflow)
+    
 
 
 # a) 45 - (+19) = 45 + (-19)
