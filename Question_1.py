@@ -1,67 +1,37 @@
-def to_twos_complement(value, bits=8):
-  """Converts an integer to its 2's complement binary string of given bits."""
-  if value < 0:
-    value = (1 << bits) + value
-  return format(value & ((1 << bits) - 1), f"0{bits}b")
+
+def binary(n):
+    return format(n & 255, '08b')
+
+def add(a, b):
+    a_bin = binary(a)
+    b_bin = binary(b)
+
+    total = int(a_bin, 2) + int(b_bin, 2)
+    result_bin = binary(total)
+    result = int(result_bin, 2)
+
+    if result >= 128:
+        result -= 256
+
+    overflow = (a >= 0 and b >= 0 and result < 0) or \
+               (a < 0 and b < 0 and result >= 0)
+
+    print(a_bin, "+", b_bin)
+    print("Result =", result_bin)
+    print("Decimal =", result)
+    print("Overflow =", overflow)
 
 
-def from_twos_complement(binary_str):
-  """Converts an 2's complement binary string back to a signed integer."""
-  bits = len(binary_str)
-  value = int(binary_str, 2)
-  if binary_str[0] == "1":
-    value -= 1 << bits
-  return value
+# a) 45 - (+19) = 45 + (-19)
+print("a) 45 - (+19)")
+print("45  =", binary(45))
+print("+19 =", binary(19))
+print("-19 =", binary(-19))
+add(45, -19)
 
-
-def perform_operation(a, b, op):
-  """Performs signed binary arithmetic using 8-bit 2's complement logic."""
-  bits = 8
-  max_val = (1 << (bits - 1)) - 1
-  min_val = -(1 << (bits - 1))
-
-  if op == "+":
-    decimal_result = a + b
-  elif op == "-":
-    decimal_result = a - b
-  else:
-    raise ValueError("Unsupported operator")
-
-  overflow = decimal_result > max_val or decimal_result < min_val
-
-  if op == "+":
-    raw_sum = a + b
-  else:
-    raw_sum = a - b
-
-  binary_result = to_twos_complement(raw_sum, bits)
-  final_decimal = from_twos_complement(binary_result)
-
-  return {
-      "bin_a": to_twos_complement(a, bits),
-      "bin_b": to_twos_complement(b, bits),
-      "bin_result": binary_result,
-      "decimal_result": final_decimal,
-      "overflow": overflow,
-  }
-
-
-def main():
-  expressions = [
-      (56, 29, "+", "+56 + (+29)"),
-      (-38, -23, "-", "(-38) - (-23)"),
-  ]
-
-  for a, b, op, desc in expressions:
-    print(f"--- Expression: {desc} ---")
-    res = perform_operation(a, b, op)
-
-    print(f"Operand A ({a}): {res['bin_a']}")
-    print(f"Operand B ({b}): {res['bin_b']}")
-    print(f"Binary Result:   {res['bin_result']}")
-    print(f"Decimal Result:  {res['decimal_result']}")
-    print(f"Overflow:        {'Yes' if res['overflow'] else 'No'}\n")
-
-
-if __name__ == "__main__":
-  main()
+# b) (-35) - (-12) = (-35) + 12
+print("\nb) (-35) - (-12)")
+print("-35 =", binary(-35))
+print("-12 =", binary(-12))
+print("+12 =", binary(12))
+add(-35, 12)
